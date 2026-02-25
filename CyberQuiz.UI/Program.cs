@@ -1,6 +1,7 @@
 using CyberQuiz.UI.Components;
 using CyberQuiz.UI.Components.Account;
 using CyberQuiz.UI.Data;
+using CyberQuiz.UI.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddScoped<ApiService>();
 
 builder.Services.AddAuthentication(options =>
     {

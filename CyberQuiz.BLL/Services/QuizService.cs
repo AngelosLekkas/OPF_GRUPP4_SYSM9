@@ -60,10 +60,24 @@ namespace CyberQuiz.BLL.Services
         }
 
 
-        //private async Task<SubProgress> GetSubCategoryProgressAsync(string userId, int subCategoryId)
-        //{
-            
-        //}
+
+
+        //Hjälpmetod för att beräkna användarens progress i en subkategori
+        private async Task<SubProgress> GetSubCategoryProgressAsync(string userId, int subCategoryId)
+        {
+            //Hämtar Questions för att få total antal frågor i subkategorin
+            var questions = await _uow.Questions.GetAllAsync();
+            var questionsInSub = questions.Where(q => q.SubCategoryId == subCategoryId).ToList();
+            var totalQuestions = questionsInSub.Count;
+
+            //Hämtar UserResults och filtrerar till denna subkategori
+            var results = await _uow.UserResults.GetAllAsync();
+            var questionIds = new HashSet<int>(questionsInSub.Select(q => q.Id));
+
+            var userResultsInSub = results
+                .Where(r => r.UserId == userId && questionIds.Contains(r.QuestionId))
+                .ToList();
+        }
 
 
 

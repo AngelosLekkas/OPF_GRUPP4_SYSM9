@@ -12,5 +12,5 @@ public class AnswerOption
     //Navigation property for the related question
     public Question Question { get; set; }
 
-    //public ICollection<UserResult> UserResults { get; set; } = new List<UserResult>();
+    public ICollection<UserResult> UserResults { get; set; } = new List<UserResult>();
 }

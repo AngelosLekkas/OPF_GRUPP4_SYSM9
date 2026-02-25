@@ -11,6 +11,6 @@ public class Question
     //Navigation property for the related subcategory
     public SubCategory SubCategory { get; set; }
 
-    //public ICollection<AnswerOption> AnswerOptions { get; set; } = new List<AnswerOption>();
-    //public ICollection<UserResult> Results { get; set; } = new List<UserResult>();
+    public ICollection<AnswerOption> AnswerOptions { get; set; } = new List<AnswerOption>();
+    public ICollection<UserResult> Results { get; set; } = new List<UserResult>();
 }

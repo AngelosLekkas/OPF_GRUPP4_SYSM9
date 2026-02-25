@@ -9,5 +9,5 @@ public class SubCategory
     public int CategoryId { get; set; }
     public Category Category { get; set; } //Navigation property for the related category
 
-    //public ICollection<Question> Questions { get; set; } = new List<Question>();  //Navigation property for related questions
+    public ICollection<Question> Questions { get; set; } = new List<Question>();  //Navigation property for related questions
 }

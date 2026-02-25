@@ -1,5 +1,7 @@
 using CyberQuiz.DAL.Data;
 using CyberQuiz.DAL.Entities;
+using CyberQuiz.DAL.Repositories;
+using CyberQuiz.DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,11 +50,21 @@ builder.Services.AddCors(options =>
     });
 });
 
+// -----------------------------
+// 7. Register Repositories + UnitOfWork
+// -----------------------------
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>();
+builder.Services.AddScoped<IUserResultRepository, UserResultRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
 
 // -----------------------------
-// 7. Run Seeder (Roles + User + Quiz Data)
+// 8. Run Seeder (Roles + User + Quiz Data)
 // -----------------------------
 using (var scope = app.Services.CreateScope())
 {
@@ -67,7 +79,7 @@ using (var scope = app.Services.CreateScope())
 
 
 // -----------------------------
-// 8. Middleware pipeline
+// 9. Middleware pipeline
 // -----------------------------
 if (app.Environment.IsDevelopment())
 {

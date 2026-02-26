@@ -77,6 +77,35 @@ namespace CyberQuiz.BLL.Services
             var userResultsInSub = results
                 .Where(r => r.UserId == userId && questionIds.Contains(r.QuestionId))
                 .ToList();
+
+
+            //Tar "senaste" per fråga via högsta Id
+            var latestByQuestion = userResultsInSub
+                .GroupBy(r => r.QuestionId)
+                .Select(g => g.OrderBy(x => x.Id).Last())
+                .ToList();
+
+            //Räknar antal rätt
+            var correctCount = latestByQuestion.Count(r => r.IsCorrect);
+
+            //Score% = correct / total * 100
+            var score = CalculateScorePercent(totalQuestions, correctCount);
+
+            //Returnerar progress-info till andra metoder
+            return new SubProgress
+            {
+                QuestionCount = totalQuestions,
+                ScorePercent = score,
+                IsCompleted = score >= CompletionThreshold //>= 80%
+            };
+        }
+
+        private static double CalculateScorePercent(int totalQuestions, int correctAnswers)
+        {
+            //Skydd mot division med 0
+            if (totalQuestions <= 0) return 0.0;
+
+            return Math.Round((double)correctAnswers / totalQuestions * 100.0, 2);
         }
 
 

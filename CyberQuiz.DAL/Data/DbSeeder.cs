@@ -28,6 +28,7 @@ public static class DbSeeder
         // Seed default user
         if (!userManager.Users.Any())
         {
+            // Create regular user
             var user = new AppUser
             {
                 UserName = "user",
@@ -39,6 +40,20 @@ public static class DbSeeder
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, "User");
+            }
+
+            // Create admin user
+            var admin = new AppUser
+            {
+                UserName = "admin",
+                Email = "admin@cyberquiz.com"
+            };
+
+            var adminResult = await userManager.CreateAsync(admin, "Admin1234!");
+
+            if (adminResult.Succeeded)
+            {
+                await userManager.AddToRoleAsync(admin, "Admin");
             }
         }
 

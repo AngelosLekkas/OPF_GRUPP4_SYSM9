@@ -16,8 +16,9 @@
                     <div class="card-body text-center">
                         <h5>@sub.Name</h5>
 
-                        <button class="btn btn-success mt-3">
-                            Starta Quiz
+                        <button class="btn btn-success mt-3"
+                                @onclick="() => GoToQuestions(sub.Id)">
+                            Start Quiz
                         </button>
                     </div>
                 </div>
@@ -75,5 +76,10 @@ else
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+    }
+
+    private void GoToQuestions(int subCategoryId)
+    {
+        Navigation.NavigateTo($"/questions/{subCategoryId}");
     }
 }

@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
 // CyberQuizAPI URL
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7050") }); 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5275") }); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddCascadingAuthenticationState();

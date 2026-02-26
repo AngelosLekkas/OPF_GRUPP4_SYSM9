@@ -1,0 +1,14 @@
+﻿@page "/questions/{SubCategoryId:int}"
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Questions</PageTitle>
+
+<h2>Questions</h2>
+
+<p>SubCategory ID: @SubCategoryId</p>
+
+@code {
+    [Parameter]
+    public int SubCategoryId { get; set; }
+}

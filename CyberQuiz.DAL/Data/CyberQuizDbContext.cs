@@ -6,21 +6,32 @@ namespace CyberQuiz.DAL.Data;
 
 public class CyberQuizDbContext : IdentityDbContext<AppUser>
 {
+
+    // Inherite from IdentityDbContext to include ASP.NET Core Identity tables for user management
     public CyberQuizDbContext(DbContextOptions<CyberQuizDbContext> options)
-        : base(options)
+       : base(options)
     {
     }
 
+    // DbSets for our entities
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<SubCategory> SubCategories => Set<SubCategory>();
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<AnswerOption> AnswerOptions => Set<AnswerOption>();
     public DbSet<UserResult> UserResults => Set<UserResult>();
 
+    // No necessary to declare DbSet<AppUser> for Identity tables (AspNetUsers, AspNetRoles, etc.) because it's already included via IdentityDbContext<AppUser>
+
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        // Call the base method to ensure Identity configurations are applied( for creating Identitytables)
         base.OnModelCreating(builder);
+
+
+        // Start defining configulation of our entities > relationships, constraints, and cascade delete behaviors
 
         // Category → SubCategory
         builder.Entity<Category>()

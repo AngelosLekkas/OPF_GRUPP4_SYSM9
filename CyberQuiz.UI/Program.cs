@@ -13,6 +13,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+
+// CyberQuizAPI URL
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7050") }); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddCascadingAuthenticationState();
@@ -35,7 +38,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
-        options.SignIn.RequireConfirmedAccount = true;
+        //options.SignIn.RequireConfirmedAccount = true;
         options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -70,3 +73,5 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
+
+

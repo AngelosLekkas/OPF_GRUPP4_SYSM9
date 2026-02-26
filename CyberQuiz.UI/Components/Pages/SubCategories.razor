@@ -1,0 +1,85 @@
+﻿@page "/subcategories/{CategoryId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<PageTitle>SubCategories</PageTitle>
+
+<h2 class="mb-4">SubCategories</h2>
+
+@if (subCategories.Any())
+{
+    <div class="row">
+        @foreach (var sub in subCategories)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <h5>@sub.Name</h5>
+
+                        <button class="btn btn-success mt-3"
+                                @onclick="() => GoToQuestions(sub.Id)">
+                            Start Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Inga subkategorier hittades.</p>
+}
+
+@code {
+
+    [Parameter]
+    public int CategoryId { get; set; }
+
+    private List<SubCategoryModel> subCategories = new();
+
+    protected override void OnInitialized()
+    {
+        // Dummy-data beroende på vald kategori
+        subCategories = CategoryId switch
+        {
+            1 => new()
+            {
+                new SubCategoryModel { Id = 1, Name = "Brandväggar" },
+                new SubCategoryModel { Id = 2, Name = "VPN" },
+                new SubCategoryModel { Id = 3, Name = "Intrusion Detection" }
+            },
+
+            2 => new()
+            {
+                new SubCategoryModel { Id = 4, Name = "Symmetrisk kryptering" },
+                new SubCategoryModel { Id = 5, Name = "Asymmetrisk kryptering" }
+            },
+
+            3 => new()
+            {
+                new SubCategoryModel { Id = 6, Name = "XSS" },
+                new SubCategoryModel { Id = 7, Name = "CSRF" }
+            },
+
+            4 => new()
+            {
+                new SubCategoryModel { Id = 8, Name = "Phishing" },
+                new SubCategoryModel { Id = 9, Name = "Pretexting" }
+            },
+
+            _ => new()
+        };
+    }
+
+    private class SubCategoryModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    private void GoToQuestions(int subCategoryId)
+    {
+        Navigation.NavigateTo($"/questions/{subCategoryId}");
+    }
+}

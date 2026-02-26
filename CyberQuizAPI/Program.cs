@@ -35,20 +35,28 @@ builder.Services.AddControllers();
 // 5. Add OpenAPI / Swagger
 // -----------------------------
 builder.Services.AddOpenApi();
+// Also enable Swagger generator so Swagger UI is available for manual testing
+builder.Services.AddSwaggerGen();
 
 // -----------------------------
 // 6. Add CORS (för Blazor UI)
 // -----------------------------
 builder.Services.AddCors(options =>
-{
+{   // Client Policy - För Blazor UI
     options.AddPolicy("AllowUI", policy =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()
-              .WithOrigins("https://localhost:7200", "http://localhost:7200");  // Check carefully the ports your Blazor UI is running on :D
+
+              // Blazor URL, Check carefully the ports your Blazor UI is running on :D
+              /*.WithOrigins("https://localhost:7255"); */
+
+              .WithOrigins("https://localhost:7250"); 
     });
 });
+
+
 
 // -----------------------------
 // 7. Register Repositories + UnitOfWork
@@ -83,7 +91,13 @@ using (var scope = app.Services.CreateScope())
 // -----------------------------
 if (app.Environment.IsDevelopment())
 {
+    // Map minimal OpenAPI endpoints (project helper) and enable the Swagger UI
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CyberQuiz API V1");
+    });
 }
 
 app.UseHttpsRedirection();
@@ -96,3 +110,27 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+// UI <--> API (Refererar inte till varandra, peka på varandra via CORS och baseAdress)
+// API --> BLL & Shared (Class Library)
+// BLL -> DAL & Shared
+// DAL -> Shared
+
+//SCENARIO
+// Användare som svara på en fråga
+// 1. UI > skaickar svaret till API
+// 2. API > skickar till BLL 
+// 3. BLL > Räkna rätt / fel
+// 4. BLL -> Säg till DAL att spara
+// 5. DAL -> Sparar till databasen
+// 6. BLL > Räkna progression
+// 7. API > Retunerar ett resultat
+// 8. UI > Visar feedback
+
+
+// UI > Pages
+// API > Endpoints: POST, GET, PUT, DELETE, api/ai/feedback
+// BLL: logik, rätt, fel, progression, services
+// DAL : migration, dbContext, modeller(endast för DATABASE)
+// Shhared: DTO objekt som används mellan lager

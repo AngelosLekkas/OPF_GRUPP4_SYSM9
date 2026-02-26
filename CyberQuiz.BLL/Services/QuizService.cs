@@ -46,7 +46,7 @@ namespace CyberQuiz.BLL.Services
                         completed++;
                 }
 
-                // Returnerar DTO till UI/API (inte DAL-entiteter)
+                //Returnerar DTO till UI/API
                 result.Add(new CategoryDto
                 {
                     Id = c.Id,
@@ -59,7 +59,27 @@ namespace CyberQuiz.BLL.Services
             return result;
         }
 
+        public async Task <SubCategoryDto> GetSubCategoryAsync (int categoryId, string userId)
+        {
+            //Måste ha användare (id)
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new ArgumentException("userId is required.");
 
+            //Hämtar subkategorier + frågor
+            var subCategories = await _uow.SubCategories.GetAllAsync();
+            var questions = await _uow.Questions.GetAllAsync();
+
+            var subsInCategory = subCategories
+                .Where(sc => sc.CategoryId == categoryId) //filtrerar subkategorier i denna kategori
+                .OrderBy(sc => sc.Id) //sorterar på Id 
+                .ToList();
+
+            //SubCategory1 -> SubProgress -> ScorePercent=80, IsCompleted=true
+            var progressBySubId = new Dictionary<int, SubProgress>(); 
+            var dtos = new List<SubCategoryDto>();
+
+
+        }
 
 
         //Hjälpmetod för att beräkna användarens progress i en subkategori

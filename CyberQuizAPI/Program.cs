@@ -16,7 +16,26 @@ builder.Services.AddDbContext<CyberQuizDbContext>(options =>
 // ---------------------------------------------
 // 2. Add Identity (Users + Roles + EF Storage)
 // ---------------------------------------------
-builder.Services.AddIdentity<AppUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = true;              // Must contain a digit
+    options.Password.RequiredLength = 6;               // Minimum length 6 characters
+    options.Password.RequireNonAlphanumeric = false;   // Non-alphanumeric characters not required
+    options.Password.RequireUppercase = false;         // Uppercase letters not required
+    options.Password.RequireLowercase = false;         // Lowercase letters not required
+    
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);  // Lockout duration 5 minutes
+    options.Lockout.MaxFailedAccessAttempts = 5;                       // Lockout after 5 failed attempts
+    options.Lockout.AllowedForNewUsers = true;                         // Enable lockout for new users
+    
+    // User settings
+    options.User.RequireUniqueEmail = true;            // Email must be unique
+    
+    // SignIn settings
+    options.SignIn.RequireConfirmedEmail = false;      // Email confirmation not required (adjust as needed)
+})
     .AddEntityFrameworkStores<CyberQuizDbContext>()
     .AddDefaultTokenProviders();
 
@@ -32,27 +51,26 @@ builder.Services.AddAuthentication();
 builder.Services.AddControllers();
 
 // -----------------------------
-// 5. Add OpenAPI / Swagger
+// 5. Add Swagger for API documentation
 // -----------------------------
-builder.Services.AddOpenApi();
-// Also enable Swagger generator so Swagger UI is available for manual testing
 builder.Services.AddSwaggerGen();
 
 // -----------------------------
-// 6. Add CORS (för Blazor UI)
+// 6. Add CORS (för Blazor UI): API contacts Blazor UI via CORS, not by referencing it directly
 // -----------------------------
 builder.Services.AddCors(options =>
-{   // Client Policy - För Blazor UI
+{
     options.AddPolicy("AllowUI", policy =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()
-
-              // Blazor URL, Check carefully the ports your Blazor UI is running on :D
-              /*.WithOrigins("https://localhost:7255"); */
-
-              .WithOrigins("https://localhost:7250"); 
+              .WithOrigins(
+                  "https://localhost:7255",   // Blazor UI HTTPS
+                  "http://localhost:5063",    // Blazor UI HTTP
+                  "http://localhost:5275",     // API HTTP (for testing)
+                  "http://localhost:7050"     // API HTTP (for testing)
+              );
     });
 });
 
@@ -72,15 +90,28 @@ var app = builder.Build();
 
 
 // -----------------------------
-// 8. Run Seeder (Roles + User + Quiz Data)
+// 8. Seed database on startup
 // -----------------------------
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<CyberQuizDbContext>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<CyberQuizDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    await DbSeeder.SeedAsync(db, userManager, roleManager);
+        await db.Database.MigrateAsync();
+
+        if (app.Environment.IsDevelopment())
+        {
+            await DbSeeder.SeedAsync(db, userManager, roleManager);
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database error: {ex.Message}");
+        throw;
+    }
 }
 
 
@@ -91,8 +122,6 @@ using (var scope = app.Services.CreateScope())
 // -----------------------------
 if (app.Environment.IsDevelopment())
 {
-    // Map minimal OpenAPI endpoints (project helper) and enable the Swagger UI
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -133,4 +162,4 @@ app.Run();
 // API > Endpoints: POST, GET, PUT, DELETE, api/ai/feedback
 // BLL: logik, rätt, fel, progression, services
 // DAL : migration, dbContext, modeller(endast för DATABASE)
-// Shhared: DTO objekt som används mellan lager
+// Shared: DTO objekt som används mellan lager

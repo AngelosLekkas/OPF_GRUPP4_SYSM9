@@ -1,0 +1,47 @@
+﻿@page "/categories"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<PageTitle>Categories</PageTitle>
+
+<h2 class="mb-4">Choose Category</h2>
+
+<div class="row">
+
+    @foreach (var category in categories)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@category.Name</h5>
+
+                    <button class="btn btn-primary mt-3" @onclick="() => GoToSubCategories(category.Id)">
+                        Open
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    private List<CategoryModel> categories = new()
+    {
+        new CategoryModel { Id = 1, Name = "Nätverkssäkerhet" },
+        new CategoryModel { Id = 2, Name = "Kryptering" },
+        new CategoryModel { Id = 3, Name = "Webbsäkerhet" },
+        new CategoryModel { Id = 4, Name = "Social Engineering" }
+    };
+
+    private void GoToSubCategories(int categoryId)
+    {
+        Navigation.NavigateTo($"/subcategories/{categoryId}");
+    }
+
+    private class CategoryModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+}

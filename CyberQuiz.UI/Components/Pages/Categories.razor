@@ -12,23 +12,23 @@
 
 <div class="row g-4">
 
-    @foreach (var category in categoriesFromApi)
+    @foreach (var category in categoriesFromApi) 
     {
         <div class="col-12 col-md-6 col-lg-4">
-            <div class="card p-3 shadow-sm">
+            <div class="card p-3 shadow-sm"> @*kategorierna blir ett "card"*@
 
                 <h5>@category.Name</h5>
 
                 <button class="btn btn-primary mt-2"
-                        @onclick="() => ToggleCategory(category.Id)">
+                        @onclick="() => ToggleCategory(category.Id)"> @*Expand vid klick*@
                     Open
                 </button>
 
-                @if (expandedCategoryId == category.Id && subCategoriesMap.ContainsKey(category.Id))
+                @if (expandedCategoryId == category.Id && subCategoriesMap.ContainsKey(category.Id)) @*Så endast det "card" som klickats expandar*@
                 {
                     <ul class="list-group mt-3">
 
-                        @foreach (var sub in subCategoriesMap[category.Id])
+                        @foreach (var sub in subCategoriesMap[category.Id]) @*hämtas från dictionary*@
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
 
@@ -42,7 +42,7 @@
                                       sub.IsCompleted ? "✅" : "⭕")
                                 </span>
 
-                                @if (!sub.IsLocked)
+                                @if (!sub.IsLocked) @*om upplåst startar*@
                                 {
                                     <button class="btn btn-success btn-sm"
                                             @onclick="() => StartQuiz(sub.Id)">
@@ -63,7 +63,7 @@
 
 @code {
 
-    private string? userId;
+    private string? userId; //kopplar till användare
 
     private List<CategoryDto> categoriesFromApi = new();
     private Dictionary<int, List<SubCategoryDto>> subCategoriesMap = new();
@@ -72,7 +72,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync(); //hämtar user
         var user = authState.User;
 
         userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -85,7 +85,7 @@
 
     private async Task ToggleCategory(int categoryId)
     {
-        if (expandedCategoryId == categoryId)
+        if (expandedCategoryId == categoryId) //Klicka igen så collapsar card
         {
             expandedCategoryId = null;
         }
@@ -101,7 +101,7 @@
         }
     }
 
-    private void StartQuiz(int subCategoryId)
+    private void StartQuiz(int subCategoryId) //startar quiz och skickar dig till /questions.razor
     {
         Navigation.NavigateTo($"/questions/{subCategoryId}");
     }

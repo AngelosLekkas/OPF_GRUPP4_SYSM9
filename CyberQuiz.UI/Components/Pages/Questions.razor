@@ -1,11 +1,13 @@
 ﻿@page "/questions/{SubCategoryId:int}"
 @using CyberQuiz.Shared.DTOs
 @inject NavigationManager Navigation
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthStateProvider
 
 @* =========================================
    KOMMER ANVÄNDAS – API/BLL
 ========================================= *@
-@* @inject IQuizApiClient QuizApi *@
+@inject IQuizApiClient QuizApi
 
 @rendermode InteractiveServer
 
@@ -140,6 +142,11 @@
         }
     };
 
+
+    // Hämtar inloggad användares ID från Identity
+    // Detta skickas till API så vi kan få personlig progression
+    private string? userId;
+
     private QuestionModel? currentQuestion;
     // =========================================
 
@@ -149,7 +156,7 @@
     // =========================================
     private List<QuestionDto> apiQuestions = new();
 
-    private string userId = "user"; // SKA BYTAS → Identity
+    //private string userId = "user"; // SKA BYTAS → Identity
     // =========================================
 
 
@@ -169,17 +176,28 @@
     // =========================================
     // INIT
     // =========================================
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // SKA BORT
-        currentQuestion = questions[0];
+        //  Hämta userId från Identity
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        // =========================================
+        // SKA BORT – DUMMY INIT
+        // =========================================
+        currentQuestion = questions.FirstOrDefault();
 
         // =========================================
         // KOMMER ANVÄNDAS – API
         // =========================================
         /*
-        apiQuestions = await QuizApi.GetQuestionsAsync(SubCategoryId, userId);
-        currentQuestion = apiQuestions.FirstOrDefault();
+        if (userId != null)
+        {
+            apiQuestions = await QuizApi.GetQuestionsAsync(SubCategoryId, userId);
+            currentQuestion = apiQuestions.FirstOrDefault();
+        }
         */
     }
 

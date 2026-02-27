@@ -60,7 +60,7 @@ namespace CyberQuiz.BLL.Services
             return result;
         }
 
-        public async Task<List<SubCategoryDto>> GetSubCategoryAsync (int categoryId, string userId)
+        public async Task<List<SubCategoryDto>> GetSubCategoriesAsync (int categoryId, string userId)
         {
             //Måste ha användare (id)
             if (string.IsNullOrWhiteSpace(userId))
@@ -198,6 +198,24 @@ namespace CyberQuiz.BLL.Services
                 QuestionId = question.Id,
                 AnswerOptionId = selected.Id,
                 IsCorrect = isCorrect
+            };
+
+            
+            await _uow.UserResults.AddAsync(userResult);
+            await _uow.SaveAsync(); //Sparar ändringar i DB
+
+            //Beräknar ny progress för subkategorin efter sparat svar
+            var progress = await GetSubCategoryProgressAsync(userId, question.SubCategoryId);
+
+            //Returnerar DTO med resultat och progress-info
+            return new SubmitAnswerResponseDto
+            {
+                QuestionId = question.Id,
+                AnswerOptionId = selected.Id,
+                IsCorrect = isCorrect,
+                CorrectAnswerOptionId = correct.Id,
+                SubCategoryScorePercent = progress.ScorePercent,
+                SubCategoryCompleted = progress.IsCompleted
             };
         }
 

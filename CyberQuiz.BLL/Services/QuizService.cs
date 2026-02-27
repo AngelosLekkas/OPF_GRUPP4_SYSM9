@@ -79,7 +79,95 @@ namespace CyberQuiz.BLL.Services
             var dtos = new List<SubCategoryDto>();
 
 
+
+            foreach (var sub in subsInCategory)
+            {
+                //Antal frågor i subkategorin
+                var questionCount = questions.Count(q => q.SubCategoryId == sub.Id);
+
+                
+                //Beräknar användarens progress för subkategorin
+                var progress = await GetSubCategoryProgressAsync(userId, sub.Id);
+
+                
+                progress.QuestionCount = questionCount;
+                progressBySubId[sub.Id] = progress;
+
+
+                //Lägger till DTO med IsLocked=true som default (kommer justeras i ApplyLockStates)
+                dtos.Add(new SubCategoryDto
+                {
+                    Id = sub.Id,
+                    Name = sub.Name,
+                    QuestionCount = questionCount,
+                    IsLocked = true //sätts korrekt i ApplyLockStates
+                });
+            }
+
+            //Sätter IsLocked baserat på föregående subkategori (intern metod längst ner)
+            ApplyLockStates(dtos, progressBySubId);
+
+            return dtos;
         }
+
+
+        public async Task<List<QuestionDto>> GetQuestionsAsync(int subCategoryId, string userId)
+        {
+            // Validering
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new ArgumentException("userId is required.");
+
+            // Hämtar subkategorier för att kunna kontrollera låsning
+            var subCategories = await _uow.SubCategories.GetAllAsync();
+            var currentSub = subCategories.SingleOrDefault(s => s.Id == subCategoryId);
+
+            // Om subkategori inte finns -> tom lista
+            if (currentSub == null)
+                return new List<QuestionDto>();
+
+            // Hämtar alla subs i samma kategori för att räkna låsning
+            var subsInCategory = subCategories
+                .Where(s => s.CategoryId == currentSub.CategoryId)
+                .OrderBy(s => s.Id)
+                .ToList();
+
+            // Kollar om subkategorin är låst för användaren
+            var lockedSet = await ComputeLockedSubCategoriesAsync(userId, subsInCategory); // intern metod längst ner
+            if (lockedSet.Contains(subCategoryId))
+                return new List<QuestionDto>();
+
+            // Hämtar frågor och filtrerar på subkategori
+            var questions = await _uow.Questions.GetAllAsync();
+
+            // Returnerar frågor som DTOs
+            return questions
+                .Where(q => q.SubCategoryId == subCategoryId)
+                .Select(q => new QuestionDto
+                {
+                    Id = q.Id,
+                    Text = q.Text
+                })
+                .ToList();
+        }
+
+
+        private static void ApplyLockStates(List<SubCategoryDto> subsOrdered, Dictionary<int, SubProgress> progressBySubId)
+        {
+            // Skydd om listan är tom
+            if (subsOrdered == null || subsOrdered.Count == 0)
+                return;
+
+            // Första subkategorin är alltid upplåst
+            subsOrdered[0].IsLocked = false;
+
+            // Resten låses upp när föregående är completed (>= 80%)
+            for (int i = 1; i < subsOrdered.Count; i++)
+            {
+                var prev = subsOrdered[i - 1];
+                subsOrdered[i].IsLocked = !progressBySubId[prev.Id].IsCompleted;
+            }
+        }
+
 
 
         //Hjälpmetod för att beräkna användarens progress i en subkategori

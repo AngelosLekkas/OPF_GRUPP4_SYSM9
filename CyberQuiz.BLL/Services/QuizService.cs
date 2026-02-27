@@ -59,7 +59,7 @@ namespace CyberQuiz.BLL.Services
             return result;
         }
 
-        public async Task <SubCategoryDto> GetSubCategoryAsync (int categoryId, string userId)
+        public async Task<List<SubCategoryDto>> GetSubCategoryAsync (int categoryId, string userId)
         {
             //Måste ha användare (id)
             if (string.IsNullOrWhiteSpace(userId))
@@ -100,7 +100,8 @@ namespace CyberQuiz.BLL.Services
                     Id = sub.Id,
                     Name = sub.Name,
                     QuestionCount = questionCount,
-                    IsLocked = true //sätts korrekt i ApplyLockStates
+                    IsLocked = true, //sätts korrekt i ApplyLockStates
+                    IsCompleted = progress.IsCompleted
                 });
             }
 

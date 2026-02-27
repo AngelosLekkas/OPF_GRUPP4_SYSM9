@@ -1,95 +1,40 @@
 ﻿@page "/categories"
 @using CyberQuiz.Shared.DTOs
-@rendermode InteractiveServer
+@using System.Security.Claims
+@using CyberQuiz.UI.Services
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IQuizApiClient QuizApi
 
-@* =========================================
-   KOMMER ANVÄNDAS – API/BLL
-   Avkommenteras när backend är klart
-========================================= *@
-@* @inject IQuizApiClient QuizApi *@
+@rendermode InteractiveServer
 
-<PageTitle>Categories</PageTitle>
-
-<h2 class="mb-4 text-center">Choose a Category</h2>
+<h3 class="mb-4 text-center">Categories</h3>
 
 <div class="row g-4">
-    @* =========================================
-       SKA BORT – använder dummy categories
-       Byts mot apiCategories senare
-    ========================================= *@
-    @foreach (var category in categories)
+
+    @foreach (var category in categoriesFromApi)
     {
-        <div class="col-md-3">
-            <div class="card shadow-sm border-primary category-card">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card p-3 shadow-sm">
 
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">@category.Name</h5>
+                <h5>@category.Name</h5>
 
-                    <button class="btn btn-primary mt-3 w-75"
-                            @onclick="() => ToggleCategory(category.Id)">
-                        @(expandedCategoryId == category.Id ? "Collapse" : "Open")
-                    </button>
-                </div>
+                <button class="btn btn-primary mt-2"
+                        @onclick="() => ToggleCategory(category.Id)">
+                    Open
+                </button>
 
-                @* =========================================
-                   Subcategories (DUMMY) – SKA BORT
-                ========================================= *@
-                @if (expandedCategoryId == category.Id)
+                @if (expandedCategoryId == category.Id && subCategoriesMap.ContainsKey(category.Id))
                 {
-                    <ul class="list-group list-group-flush border-top mt-2">
+                    <ul class="list-group mt-3">
 
-                        @* SKA BORT – använder category.SubCategories *@
-                        @foreach (var sub in category.SubCategories)
+                        @foreach (var sub in subCategoriesMap[category.Id])
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
 
                                 <div>
                                     <strong>@sub.Name</strong><br />
-                                    <small class="text-muted">@sub.QuestionCount questions</small>
-                                </div>
-
-                                @if (sub.IsLocked)
-                                {
-                                    <span class="text-danger fs-5">🔒</span>
-                                }
-                                else if (sub.IsCompleted)
-                                {
-                                    <span class="text-success fs-5">✅</span>
-                                }
-                                else
-                                {
-                                    <span class="text-secondary fs-5">⭕</span>
-                                }
-
-                                @if (!sub.IsLocked)
-                                {
-                                    <button class="btn btn-success btn-sm ms-2"
-                                            @onclick="() => StartQuiz(sub.Id)">
-                                        Start
-                                    </button>
-                                }
-                            </li>
-                        }
-                    </ul>
-                }
-
-                @* =========================================
-                   KOMMER ANVÄNDAS – API VERSION
-                   (avkommenteras vid merge)
-                ========================================= *@
-                @*
-                @if (expandedCategoryId == category.Id && apiSubCategories.ContainsKey(category.Id))
-                {
-                    <ul class="list-group list-group-flush border-top mt-2">
-
-                        @foreach (var sub in apiSubCategories[category.Id])
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-
-                                <div>
-                                    <strong>@sub.Name</strong><br />
-                                    <small class="text-muted">@sub.QuestionCount questions</small>
+                                    <small>@sub.QuestionCount questions</small>
                                 </div>
 
                                 <span>
@@ -99,110 +44,65 @@
 
                                 @if (!sub.IsLocked)
                                 {
-                                    <button class="btn btn-success btn-sm ms-2"
+                                    <button class="btn btn-success btn-sm"
                                             @onclick="() => StartQuiz(sub.Id)">
                                         Start
                                     </button>
                                 }
                             </li>
                         }
+
                     </ul>
                 }
-                *@
 
             </div>
         </div>
     }
+
 </div>
 
 @code {
 
-    // =========================================
-    // SKA BORT – DUMMY DATA
-    // =========================================
-    private List<CategoryModel> categories = new()
+    private string? userId;
+
+    private List<CategoryDto> categoriesFromApi = new();
+    private Dictionary<int, List<SubCategoryDto>> subCategoriesMap = new();
+
+    private int? expandedCategoryId;
+
+    protected override async Task OnInitializedAsync()
     {
-        new CategoryModel
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != null)
         {
-            Id = 1,
-            Name = "Nätverkssäkerhet",
-            SubCategories = new()
-            {
-                new() { Id = 11, Name = "Sub 1", QuestionCount = 5, IsLocked = false, IsCompleted = true },
-                new() { Id = 12, Name = "Sub 2", QuestionCount = 3, IsLocked = true, IsCompleted = false }
-            }
+            categoriesFromApi = await QuizApi.GetCategoriesAsync(userId);
         }
-    };
-    // =========================================
+    }
 
-
-    // =========================================
-    // KOMMER ANVÄNDAS – API/BLL
-    // =========================================
-    private List<CategoryDto> apiCategories = new();
-    private Dictionary<int, List<SubCategoryDto>> apiSubCategories = new();
-
-    private string userId = "user"; // SKA BYTAS → Identity
-    // =========================================
-
-
-    // =========================================
-    // STATE (BEHÅLLS)
-    // =========================================
-    private int? expandedCategoryId = null;
-    // =========================================
-
-
-    // =========================================
-    // KOMMER ANVÄNDAS – async för API
-    // =========================================
     private async Task ToggleCategory(int categoryId)
     {
         if (expandedCategoryId == categoryId)
         {
             expandedCategoryId = null;
-            return;
         }
-
-        expandedCategoryId = categoryId;
-
-        // =========================================
-        // KOMMER ANVÄNDAS – API CALL
-        // =========================================
-        /*
-        if (!apiSubCategories.ContainsKey(categoryId))
+        else
         {
-            var subs = await QuizApi.GetSubCategoriesAsync(categoryId, userId);
-            apiSubCategories[categoryId] = subs;
-        }
-        */
-    }
-    // =========================================
+            expandedCategoryId = categoryId;
 
+            if (!subCategoriesMap.ContainsKey(categoryId))
+            {
+                var subs = await QuizApi.GetSubCategoriesAsync(categoryId, userId!);
+                subCategoriesMap[categoryId] = subs;
+            }
+        }
+    }
 
     private void StartQuiz(int subCategoryId)
     {
         Navigation.NavigateTo($"/questions/{subCategoryId}");
     }
-
-
-    // =========================================
-    // SKA BORT – DUMMY MODELLER
-    // =========================================
-    private class CategoryModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public List<SubCategoryDto> SubCategories { get; set; } = new();
-    }
-
-    private class SubCategoryDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public int QuestionCount { get; set; }
-        public bool IsLocked { get; set; }
-        public bool IsCompleted { get; set; }
-    }
-    // =========================================
 }

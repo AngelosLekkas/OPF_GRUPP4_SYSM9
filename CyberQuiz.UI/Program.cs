@@ -22,7 +22,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-//builder.Services.AddScoped<IQuizApiClient, ApiService>();
+builder.Services.AddScoped<IQuizApiClient, ApiService>();
 
 builder.Services.AddAuthentication(options =>
     {

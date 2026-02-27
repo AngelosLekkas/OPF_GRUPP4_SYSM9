@@ -101,7 +101,8 @@ namespace CyberQuiz.BLL.Services
                     Id = sub.Id,
                     Name = sub.Name,
                     QuestionCount = questionCount,
-                    IsLocked = true //sätts korrekt i ApplyLockStates
+                    IsLocked = true, //sätts korrekt i ApplyLockStates
+                    IsCompleted = progress.IsCompleted
                 });
             }
 

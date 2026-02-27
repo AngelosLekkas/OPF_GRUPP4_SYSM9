@@ -2,7 +2,7 @@
 
 namespace CyberQuiz.UI.Services
 {
-    public class ApiService /*: IQuizApiClient*/
+    public class ApiService : IQuizApiClient
     {
         private readonly HttpClient _httpClient;
 

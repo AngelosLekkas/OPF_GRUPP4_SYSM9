@@ -1,4 +1,5 @@
 ﻿using CyberQuiz.BLL.Interfaces;
+using CyberQuiz.DAL.Entities;
 using CyberQuiz.DAL.Repositories.Interfaces;
 using CyberQuiz.Shared.DTOs;
 using System;
@@ -59,7 +60,7 @@ namespace CyberQuiz.BLL.Services
             return result;
         }
 
-        public async Task <SubCategoryDto> GetSubCategoryAsync (int categoryId, string userId)
+        public async Task<List<SubCategoryDto>> GetSubCategoryAsync (int categoryId, string userId)
         {
             //Måste ha användare (id)
             if (string.IsNullOrWhiteSpace(userId))
@@ -104,7 +105,7 @@ namespace CyberQuiz.BLL.Services
                 });
             }
 
-            //Sätter IsLocked baserat på föregående subkategori (intern metod längst ner)
+            //Sätter IsLocked baserat på föregående subkategori (intern metod längre ner)
             ApplyLockStates(dtos, progressBySubId);
 
             return dtos;
@@ -113,33 +114,35 @@ namespace CyberQuiz.BLL.Services
 
         public async Task<List<QuestionDto>> GetQuestionsAsync(int subCategoryId, string userId)
         {
-            // Validering
+            //Måste ha användare
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("userId is required.");
 
-            // Hämtar subkategorier för att kunna kontrollera låsning
+            //Hämtar subkategorier för att kunna kontrollera låsning
             var subCategories = await _uow.SubCategories.GetAllAsync();
             var currentSub = subCategories.SingleOrDefault(s => s.Id == subCategoryId);
 
-            // Om subkategori inte finns -> tom lista
+            //Om subkategori inte finns -> tom lista
             if (currentSub == null)
                 return new List<QuestionDto>();
 
-            // Hämtar alla subs i samma kategori för att räkna låsning
+
+            //Hämtar alla subs i samma kategori för att räkna låsning
             var subsInCategory = subCategories
                 .Where(s => s.CategoryId == currentSub.CategoryId)
                 .OrderBy(s => s.Id)
                 .ToList();
 
-            // Kollar om subkategorin är låst för användaren
-            var lockedSet = await ComputeLockedSubCategoriesAsync(userId, subsInCategory); // intern metod längst ner
+            //Kollar om subkategorin är låst för användaren
+            var lockedSet = await ComputeLockedSubCategoriesAsync(userId, subsInCategory); //intern metod längre ner
             if (lockedSet.Contains(subCategoryId))
                 return new List<QuestionDto>();
 
-            // Hämtar frågor och filtrerar på subkategori
+            
+            //Hämtar frågor och filtrerar på subkategori
             var questions = await _uow.Questions.GetAllAsync();
 
-            // Returnerar frågor som DTOs
+            //Returnerar frågor som DTOs
             return questions
                 .Where(q => q.SubCategoryId == subCategoryId)
                 .Select(q => new QuestionDto
@@ -151,6 +154,84 @@ namespace CyberQuiz.BLL.Services
         }
 
 
+        public async Task<SubmitAnswerResponseDto> SubmitAnswerAsync(string userId, SubmitAnswerRequestDto request)
+        {
+            //Måste ha användare
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new ArgumentException("userId is required.");
+
+            //Måste ha request (SubmitAnswerRequestDto)
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+
+            //Hämtar frågan från DAL
+            var question = await _uow.Questions.GetByIdAsync(request.QuestionId);
+            if (question == null)
+                throw new InvalidOperationException("Question not found."); //Om frågan inte finns -> exception
+
+
+            //Hämtar valt svarsalternativ och kontrollerar att det tillhör frågan
+            var selected = await _uow.AnswerOptions.GetByIdAsync(request.AnswerOptionId);
+            if (selected == null)
+                throw new InvalidOperationException("AnswerOption not found.");
+
+            if (selected.QuestionId != question.Id)
+                throw new InvalidOperationException("AnswerOption belongs to another Question.");
+
+            //Hämtar alla AnswerOptions för question för att kunna returnera rätt svarsalternativ i response
+            var allOptions = await _uow.AnswerOptions.GetAllAsync();
+            var optionsForQuestion = allOptions.Where(o => o.QuestionId == question.Id).ToList();
+
+
+            //Kontrollerar om det valda alternativet är korrekt
+            var correct = optionsForQuestion.FirstOrDefault(o => o.IsCorrect);
+            if (correct == null)
+                throw new InvalidOperationException("Question has no correct option.");
+
+            var isCorrect = selected.Id == correct.Id;
+
+            //Skapar UserResult (sparar varje svar)
+            var userResult = new UserResult
+            {
+                UserId = userId,
+                QuestionId = question.Id,
+                AnswerOptionId = selected.Id,
+                IsCorrect = isCorrect
+            };
+        }
+
+
+
+
+        //-------------------------------------------------------------------------------------------
+        //--------------------------Interna hjälpmetoder---------------------------------------------
+        //-------------------------------------------------------------------------------------------
+
+
+
+
+        //Intern hjälpmetod för att beräkna vilka subkategorier som är låsta för användaren
+        private async Task<HashSet<int>> ComputeLockedSubCategoriesAsync(string userId, List<SubCategory> orderedSubs)
+        {
+            //Returnerar vilka subCategoryId som är låsta för användaren
+            var locked = new HashSet<int>();
+            if(orderedSubs.Count == 0) return locked;
+
+            //För varje SubCategory efter första, kolla om föregående är completed
+            for (int i = 1; i < orderedSubs.Count; i++)
+            {
+                var prevSubId = orderedSubs[i - 1].Id;
+                var prevProgress = await GetSubCategoryProgressAsync(userId, prevSubId);
+
+                if(!prevProgress.IsCompleted)
+                    locked.Add(orderedSubs[i].Id);
+            }
+            return locked;
+        }
+
+
+        //Hjälpmetod för att sätta IsLocked på subkategorier baserat på progress
         private static void ApplyLockStates(List<SubCategoryDto> subsOrdered, Dictionary<int, SubProgress> progressBySubId)
         {
             // Skydd om listan är tom
@@ -208,6 +289,8 @@ namespace CyberQuiz.BLL.Services
             };
         }
 
+
+        //Hjälpmetod som räknar score % och hanterar division med 0
         private static double CalculateScorePercent(int totalQuestions, int correctAnswers)
         {
             //Skydd mot division med 0

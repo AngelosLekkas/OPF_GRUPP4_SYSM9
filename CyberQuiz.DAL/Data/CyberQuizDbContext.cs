@@ -23,8 +23,9 @@ public class CyberQuizDbContext : IdentityDbContext<AppUser>
     // No necessary to declare DbSet<AppUser> for Identity tables (AspNetUsers, AspNetRoles, etc.) because it's already included via IdentityDbContext<AppUser>
 
 
-
-
+    // ========================================================================================================================================
+    //  OnModelCreating: Tell database to create columns, relationships, constraints, and cascade delete behaviors based on our entity classes 
+    // ========================================================================================================================================
     protected override void OnModelCreating(ModelBuilder builder)
     {
         // Call the base method to ensure Identity configurations are applied( for creating Identitytables)
@@ -59,14 +60,14 @@ public class CyberQuizDbContext : IdentityDbContext<AppUser>
             .HasMany(u => u.Results)
             .WithOne(r => r.User)
             .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); // cascade: if user is deleted (user choice)
 
         // Question → UserResult
         builder.Entity<Question>()
             .HasMany(q => q.Results)
             .WithOne(r => r.Question)
             .HasForeignKey(r => r.QuestionId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         // AnswerOption → UserResult
         builder.Entity<AnswerOption>()
@@ -74,5 +75,30 @@ public class CyberQuizDbContext : IdentityDbContext<AppUser>
             .WithOne(r => r.AnswerOption)
             .HasForeignKey(r => r.AnswerOptionId)
             .OnDelete(DeleteBehavior.Restrict);
+
+
+
+        // ==========================================
+        //  INDEXES FOR PERFORMANCE: Tell SQL Server to prepare / order data in advance
+        //  for faster queries (especially for sorting and lookups)
+        // ==========================================
+
+        // Index for sorting SubCategories by Order inside a Category
+        builder.Entity<SubCategory>()
+            .HasIndex(s => new { s.CategoryId, s.SortOrder });
+
+        // Index for AnswerOptions display order
+        builder.Entity<AnswerOption>()
+            .HasIndex(a => new { a.QuestionId, a.DisplayOrder });
+
+        // Index for User History lookups (faster profile/progression queries)
+        builder.Entity<UserResult>()
+            .HasIndex(u => new { u.UserId, u.AnsweredAt });
     }
 }
+
+
+// Casecade: When a Category is deleted, all related SubCategories will also be deleted. 
+
+// Restrict: When an AnswerOption is deleted, related UserResults will not be deleted, and the delete operation will be blocked if there are related UserResults.
+// This is to preserve the integrity of quiz attempt history.

@@ -58,3 +58,18 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* Category card hover-effekt
+   Gör att kortet känns "levande" när användaren hovrar över det */
+.category-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* transition = hur mjukt animationen sker */
+}
+
+/* När musen är över kortet */
+    .category-card:hover {
+        transform: scale(1.03) translateY(-3px);
+        /* lyfter kortet lite uppåt också */
+
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    }

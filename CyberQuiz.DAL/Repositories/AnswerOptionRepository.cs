@@ -2,6 +2,8 @@
 using CyberQuiz.DAL.Entities;
 using CyberQuiz.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading;
 
 namespace CyberQuiz.DAL.Repositories;
 
@@ -14,11 +16,24 @@ public class AnswerOptionRepository : IAnswerOptionRepository
         _db = db;
     }
 
-    public async Task<List<AnswerOption>> GetAllAsync()
-        => await _db.AnswerOptions.ToListAsync();
 
+    // Returns all answer options in the database(For Admin ) >> ALL
+    public async Task<List<AnswerOption>> GetAllAsync()
+        => await _db.AnswerOptions
+            .AsNoTracking()
+            .OrderBy(a => a.DisplayOrder)
+            .ToListAsync();
+
+
+    // Returns all answer options for a specific question >> All for 1 question
+    public async Task<List<AnswerOption>> GetByQuestionIdAsync(int questionId, CancellationToken cancellationToken = default) // Default is NONE
+        => await _db.AnswerOptions
+            .Where(o => o.QuestionId == questionId)
+            .ToListAsync(cancellationToken);
+
+    // Returns a specific answer option by its ID 
     public async Task<AnswerOption?> GetByIdAsync(int id)
-        => await _db.AnswerOptions.FindAsync(id);
+        => await _db.AnswerOptions.FindAsync(id); // for PK only!!!
 
     public async Task AddAsync(AnswerOption option)
         => await _db.AnswerOptions.AddAsync(option);

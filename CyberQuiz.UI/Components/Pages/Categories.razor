@@ -79,6 +79,8 @@
 
         userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+        Console.WriteLine($"USER ID: {userId}");
+
         if (userId != null)
         {
             categoriesFromApi = await QuizApi.GetCategoriesAsync(userId);

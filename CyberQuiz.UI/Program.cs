@@ -12,17 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddControllers();
-builder.Services.AddHttpClient();
 
 // CyberQuizAPI URL
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5275") }); 
+builder.Services.AddHttpClient<IQuizApiClient, ApiService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5275");
+});
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<ApiService>();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
-builder.Services.AddScoped<IQuizApiClient, ApiService>();
 
 builder.Services.AddAuthentication(options =>
     {

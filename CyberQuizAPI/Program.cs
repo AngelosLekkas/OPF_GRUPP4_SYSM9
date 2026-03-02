@@ -7,12 +7,15 @@ using CyberQuiz.DAL.Repositories.Interfaces;
 using CyberQuiz.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CyberQuiz.BLL.Interfaces;
+using CyberQuiz.BLL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // -----------------------------
 // 1. Add DbContext (SQL Server)
 // -----------------------------
+
 builder.Services.AddDbContext<CyberQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -102,7 +105,7 @@ builder.Services.AddCors(options =>
               .WithOrigins(
                   "https://localhost:7255",   // Blazor UI HTTPS
                   "http://localhost:5063",    // Blazor UI HTTP
-                  "http://localhost:5275",     // API HTTP (for testing)
+                  "http://localhost:5275/swagger",     // API HTTP (for testing)
                   "http://localhost:7050"     // API HTTP (for testing)
               );
     });
@@ -138,9 +141,6 @@ builder.Services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>();
 builder.Services.AddScoped<IUserResultRepository, UserResultRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// -----------------------------
-// 7.1 Register BLL services
-// -----------------------------
 builder.Services.AddScoped<IQuizService, QuizService>();
 
 var app = builder.Build();

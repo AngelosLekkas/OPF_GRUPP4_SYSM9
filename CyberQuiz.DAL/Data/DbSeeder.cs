@@ -18,7 +18,7 @@ public static class DbSeeder
         await SeedRolesAsync(roleManager);
 
         // 3. Seed Default Users (user, admin) using transaction logic if needed
-        await SeedUsersAsync(userManager);
+        //await SeedUsersAsync(userManager);
 
         // 4. Seed Quiz Content (Categories, SubCategories, Questions, Answers)
         await SeedQuizDataAsync(db);
@@ -42,42 +42,42 @@ public static class DbSeeder
     //========================
     // SEED USER & ADMIN
     //========================
-    private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
-    {
-        // Seed regular user
-        if (await userManager.FindByNameAsync("user") == null)
-        {
-            var user = new AppUser
-            {
-                UserName = "user",
-                Email = "user@example.com",
-                EmailConfirmed = true,
-                FullName = "Regular User"
-            };
-            var result = await userManager.CreateAsync(user, "Password1234!");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, "User");
-            }
-        }
+    //private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
+    //{
+    //    // Seed regular user
+    //    if (await userManager.FindByNameAsync("user") == null)
+    //    {
+    //        var user = new AppUser
+    //        {
+    //            UserName = "user",
+    //            Email = "user@example.com",
+    //            EmailConfirmed = true,
+    //            FullName = "Regular User"
+    //        };
+    //        var result = await userManager.CreateAsync(user, "Password1234!");
+    //        if (result.Succeeded)
+    //        {
+    //            await userManager.AddToRoleAsync(user, "User");
+    //        }
+    //    }
 
-        // Seed admin user
-        if (await userManager.FindByNameAsync("admin") == null)
-        {
-            var admin = new AppUser
-            {
-                UserName = "admin",
-                Email = "admin@cyberquiz.com",
-                EmailConfirmed = true,
-                FullName = "System Administrator"
-            };
-            var result = await userManager.CreateAsync(admin, "Admin1234!");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(admin, "Admin");
-            }
-        }
-    }
+    //    // Seed admin user
+    //    if (await userManager.FindByNameAsync("admin") == null)
+    //    {
+    //        var admin = new AppUser
+    //        {
+    //            UserName = "admin",
+    //            Email = "admin@cyberquiz.com",
+    //            EmailConfirmed = true,
+    //            FullName = "System Administrator"
+    //        };
+    //        var result = await userManager.CreateAsync(admin, "Admin1234!");
+    //        if (result.Succeeded)
+    //        {
+    //            await userManager.AddToRoleAsync(admin, "Admin");
+    //        }
+    //    }
+    //}
 
 
 

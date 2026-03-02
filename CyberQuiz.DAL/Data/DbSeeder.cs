@@ -435,6 +435,13 @@ public static class DbSeeder
             // TRANSITION: Save Categories with SubCategories, Questions, and Answers(save all or nothing)
             //============================================================================================
             await db.Categories.AddRangeAsync(cat1, cat2, cat3);
+
+            await db.SubCategories.AddRangeAsync(
+            sub1_1, sub1_2,
+            sub2_1, sub2_2,
+            sub3_1, sub3_2
+            );
+
             await db.SaveChangesAsync();
 
             await transaction.CommitAsync();

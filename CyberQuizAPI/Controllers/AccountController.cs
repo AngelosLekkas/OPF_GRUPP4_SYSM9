@@ -2,6 +2,7 @@ using CyberQuiz.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -23,23 +24,28 @@ public class AccountController : ControllerBase
         _environment = environment;
     }
 
-    public sealed record LoginDto(string UserName, string Password, bool RememberMe = false);
+    public sealed record LoginDto([Required] string UserName, [Required] string Password, bool RememberMe = false);
     public sealed record UserDto(string Id, string? UserName);
 
     // POST: api/account/login
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto dto)
     {
-        if (dto is null || string.IsNullOrWhiteSpace(dto.UserName) || string.IsNullOrWhiteSpace(dto.Password))
-            return BadRequest("username and password are required");
-
-        // Use username-based overload to avoid user enumeration and enable lockout on failure
+        // Model validation is handled by [ApiController] and data annotations on LoginDto
         var result = await _signInManager.PasswordSignInAsync(dto.UserName, dto.Password, dto.RememberMe, lockoutOnFailure: true);
         if (!result.Succeeded)
             return Unauthorized();
 
-        return Ok();
+        // Retrieve user to return minimal profile information for UI
+        var user = await _userManager.FindByNameAsync(dto.UserName);
+        if (user is null)
+        {
+            // Sign-in succeeded but user not found (shouldn't happen) - return generic success without body
+            return Ok();
+        }
+
+        return Ok(new UserDto(user.Id, user.UserName));
     }
 
     // POST: api/account/logout

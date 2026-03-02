@@ -9,6 +9,7 @@ namespace CyberQuiz.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AccountController : ControllerBase
 {
     private readonly SignInManager<AppUser> _signInManager;
@@ -23,6 +24,7 @@ public class AccountController : ControllerBase
     }
 
     public sealed record LoginDto(string UserName, string Password, bool RememberMe = false);
+    public sealed record UserDto(string Id, string? UserName);
 
     // POST: api/account/login
     [HttpPost("login")]
@@ -32,11 +34,8 @@ public class AccountController : ControllerBase
         if (dto is null || string.IsNullOrWhiteSpace(dto.UserName) || string.IsNullOrWhiteSpace(dto.Password))
             return BadRequest("username and password are required");
 
-        var user = await _userManager.FindByNameAsync(dto.UserName);
-        if (user is null)
-            return Unauthorized();
-
-        var result = await _signInManager.PasswordSignInAsync(user, dto.Password, dto.RememberMe, lockoutOnFailure: false);
+        // Use username-based overload to avoid user enumeration and enable lockout on failure
+        var result = await _signInManager.PasswordSignInAsync(dto.UserName, dto.Password, dto.RememberMe, lockoutOnFailure: true);
         if (!result.Succeeded)
             return Unauthorized();
 
@@ -57,10 +56,14 @@ public class AccountController : ControllerBase
     [Authorize]
     public IActionResult Me()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Use UserManager to obtain the user id from the current principal in a resilient way
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
         var userName = User.Identity?.Name;
 
-        return Ok(new { userId, userName });
+        return Ok(new UserDto(userId, userName));
     }
 
     // GET: api/account/dev/seed-status

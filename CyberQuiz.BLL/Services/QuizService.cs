@@ -145,14 +145,19 @@ namespace CyberQuiz.BLL.Services
 
             //Returnerar frågor som DTOs
             return questions
-                .Where(q => q.SubCategoryId == subCategoryId)
-                .Select(q => new QuestionDto
+            .Where(q => q.SubCategoryId == subCategoryId)
+            .Select(q => new QuestionDto
+            {
+             Id = q.Id,
+                Text = q.Text,
+                AnswerOptions = q.AnswerOptions.Select(a => new AnswerOptionDto
                 {
-                    Id = q.Id,
-                    Text = q.Text
-                })
+                    Id = a.Id,
+                    Text = a.Text
+                }).ToList()
+            })
                 .ToList();
-        }
+            }
 
 
         public async Task<SubmitAnswerResponseDto> SubmitAnswerAsync(string userId, SubmitAnswerRequestDto request)

@@ -13,7 +13,8 @@ namespace CyberQuiz.UI.Services
 
         public async Task<List<CategoryDto>> GetCategoriesAsync(string userId)
         {
-            return await _httpClient.GetFromJsonAsync<List<CategoryDto>>("api/quiz/categories");
+            return await _httpClient.GetFromJsonAsync<List<CategoryDto>>(
+                $"api/quiz/categories?userId={userId}");
         }
 
         public async Task<List<SubCategoryDto>> GetSubCategoriesAsync(int categoryId, string userId)

@@ -92,7 +92,13 @@
         </p>
 
         <p>
-            Score: <strong>@((correctAnswers * 100) / apiQuestions.Count)%</strong>
+            Score: <strong>
+            @(
+                apiQuestions.Count == 0
+                ? 0
+                : (correctAnswers * 100) / apiQuestions.Count
+            )%
+        </strong>
         </p>
 
         <button class="btn btn-primary mt-3"
@@ -110,7 +116,7 @@
     // =========================================
     // SKA BORT – DUMMY DATA
     // =========================================
-   
+
     // Hämtar inloggad användares ID från Identity
     // Detta skickas till API så vi kan få personlig progression
     private string? userId;
@@ -188,9 +194,7 @@
         if (response.IsCorrect)
             correctAnswers++;
 
-        //AUTO NEXT efter 1 sekund
-        await Task.Delay(100);
-        NextQuestion();
+        StateHasChanged();
     }
 
 

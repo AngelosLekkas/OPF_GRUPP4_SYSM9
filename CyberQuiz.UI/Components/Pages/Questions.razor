@@ -33,11 +33,9 @@
         @foreach (var option in currentQuestion.AnswerOptions)
         {
             <div class="form-check mt-2">
-
                 <input type="radio"
                        class="form-check-input"
                        name="answer"
-                       value="@option.Id"
                        checked="@(selectedAnswerId == option.Id)"
                        @onchange="() => selectedAnswerId = option.Id"
                        disabled="@answered" />
@@ -99,13 +97,13 @@
                 : (correctAnswers * 100) / apiQuestions.Count
             )%
         </strong>
-        </p>
+    </p>
 
-        <button class="btn btn-primary mt-3"
-                @onclick="GoToCategories">
-            Back to Categories
-        </button>
-    </div>
+    <button class="btn btn-primary mt-3"
+            @onclick="GoToCategories">
+        Back to Categories
+    </button>
+</div>
 }
 
 @code {
@@ -188,6 +186,8 @@
                 AnswerOptionId = selectedAnswerId!.Value
             });
 
+        Console.WriteLine($"SERVER SA: {response.IsCorrect}");
+
         isCorrect = response.IsCorrect;
         answered = true;
 
@@ -203,15 +203,16 @@
     // =========================================
     private void NextQuestion()
     {
+        // Reset feedback först
+        answered = false;
+        isCorrect = false;
+        selectedAnswerId = null;
+
         questionIndex++;
 
         if (questionIndex < apiQuestions.Count)
         {
             currentQuestion = apiQuestions[questionIndex];
-
-            selectedAnswerId = null;
-            answered = false;
-            isCorrect = false;
         }
         else
         {

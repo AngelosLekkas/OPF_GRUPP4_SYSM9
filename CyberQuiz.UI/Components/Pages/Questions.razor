@@ -175,10 +175,6 @@
     // =========================================
     private async Task SubmitAnswer()
     {
-       // =========================================
-        // KOMMER ANVÄNDAS – API
-        // =========================================
-        
         var response = await QuizApi.SubmitAnswerAsync(userId!,
             new SubmitAnswerRequestDto
             {
@@ -191,7 +187,10 @@
 
         if (response.IsCorrect)
             correctAnswers++;
-        
+
+        //AUTO NEXT efter 1 sekund
+        await Task.Delay(100);
+        NextQuestion();
     }
 
 

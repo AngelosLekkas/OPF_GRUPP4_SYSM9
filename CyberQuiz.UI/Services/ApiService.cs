@@ -34,7 +34,11 @@ namespace CyberQuiz.UI.Services
             var response = await _httpClient.PostAsJsonAsync(
                 $"api/quiz/submit-answer?userId={userId}", request);
 
-            return await response.Content.ReadFromJsonAsync<SubmitAnswerResponseDto>();
+            var raw = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("RAW RESPONSE:");
+            Console.WriteLine(raw);
+
+            return System.Text.Json.JsonSerializer.Deserialize<SubmitAnswerResponseDto>(raw)!;
         }
     }
 }

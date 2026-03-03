@@ -1,10 +1,9 @@
 ﻿using CyberQuiz.DAL.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CyberQuiz.DAL.Data;
 
-public class CyberQuizDbContext : IdentityDbContext<AppUser>
+public class CyberQuizDbContext : DbContext
 {
 
     // Inherite from IdentityDbContext to include ASP.NET Core Identity tables for user management

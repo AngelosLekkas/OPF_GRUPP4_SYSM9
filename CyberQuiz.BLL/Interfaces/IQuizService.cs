@@ -13,5 +13,6 @@ namespace CyberQuiz.BLL.Interfaces
         Task<List<SubCategoryDto>> GetSubCategoriesAsync(int categoryId, string userId);
         Task<List<QuestionDto>> GetQuestionsAsync(int subCategoryId, string userId);
         Task<SubmitAnswerResponseDto> SubmitAnswerAsync(string userId, SubmitAnswerRequestDto request);
+        Task<UserProgressDto> GetUserProgressAsync(string userId);
     }
 }

@@ -18,6 +18,10 @@ builder.Services.AddHttpClient<IQuizApiClient, ApiService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5275");
 });
+builder.Services.AddHttpClient("API", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001");
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityRedirectManager>();

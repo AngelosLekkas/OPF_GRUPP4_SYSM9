@@ -1,9 +1,13 @@
 ﻿@page "/questions/{SubCategoryId:int}"
+@using CyberQuiz.Shared.AI
 @using CyberQuiz.Shared.DTOs
 @inject NavigationManager Navigation
 @using System.Security.Claims
 @using CyberQuiz.UI.Services
+@inject IHttpClientFactory HttpFactory
+@inject HttpClient Http
 @inject AuthenticationStateProvider AuthStateProvider
+@inject IQuizApiClient QuizApi
 
 @* =========================================
    KOMMER ANVÄNDAS – API/BLL
@@ -72,6 +76,22 @@
                     @onclick="NextQuestion">
                 Next Question
             </button>
+        }
+        
+        @if (answered && !isCorrect)
+        {
+            <h3>Ask the AI</h3>
+
+            <input @bind="userMessage" placeholder="Ask about this question..." />
+
+            <button @onclick="AskAi">Ask AI</button>
+
+            @if (aiAnswer != null)
+            {
+                <div class="alert alert-info">
+                    <b>AI:</b> @aiAnswer
+                </div>
+            }
         }
     </div>
 }
@@ -218,6 +238,32 @@
         {
             quizFinished = true;
         }
+    }
+
+    //ai:
+
+    string? userMessage;
+    string? aiAnswer;
+
+    async Task AskAi()
+    {
+        if (string.IsNullOrWhiteSpace(userMessage))
+        {
+            aiAnswer = "Please enter a question for the AI.";
+            return;
+        }
+
+        var req = new AiChatRequestDto
+        {
+            Prompt = userMessage,
+            Context = $"Question: {currentQuestion?.Text}"
+        };
+
+        var result = await QuizApi.AskAiAsync(req);
+
+        aiAnswer = result.Answer;
+
+        userMessage = "";
     }
 
 

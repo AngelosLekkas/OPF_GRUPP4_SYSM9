@@ -1,4 +1,5 @@
-﻿using CyberQuiz.Shared.DTOs;
+﻿using CyberQuiz.Shared.AI;
+using CyberQuiz.Shared.DTOs;
 
 namespace CyberQuiz.UI.Services
 {
@@ -9,5 +10,6 @@ namespace CyberQuiz.UI.Services
         Task<List<QuestionDto>> GetQuestionsAsync(int subCategoryId, string userId);
         Task<SubmitAnswerResponseDto> SubmitAnswerAsync(string userId, SubmitAnswerRequestDto request);
         Task<UserProgressDto> GetUserProgressAsync(string userId);
+        Task<AiChatResponseDto> AskAiAsync(AiChatRequestDto request);
     }
 }

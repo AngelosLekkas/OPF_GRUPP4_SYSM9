@@ -17,6 +17,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CyberQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHttpClient<AiService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+});
+
 // ---------------------------------------------
 // 2. Add Identity (Users + Roles + EF Storage)
 // ---------------------------------------------

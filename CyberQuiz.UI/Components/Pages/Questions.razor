@@ -7,6 +7,7 @@
 @inject IHttpClientFactory HttpFactory
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthStateProvider
+@inject IQuizApiClient QuizApi
 
 @* =========================================
    KOMMER ANVÄNDAS – API/BLL
@@ -252,13 +253,9 @@
             Context = $"Question: {currentQuestion?.Text}"
         };
 
-        var client = HttpFactory.CreateClient("API");
+        var result = await QuizApi.AskAiAsync(req);
 
-        var response = await Http.PostAsJsonAsync("api/ai/chat", req);
-
-        var result = await response.Content.ReadFromJsonAsync<AiChatResponseDto>();
-
-        aiAnswer = result?.Answer;
+        aiAnswer = result.Answer;
     }
 
 

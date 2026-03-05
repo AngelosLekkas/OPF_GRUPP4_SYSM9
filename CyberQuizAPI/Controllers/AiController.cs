@@ -8,7 +8,7 @@ namespace CyberQuiz.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[AllowAnonymous]
 public class AiController : ControllerBase
 {
     private readonly AiService _ai;
@@ -19,22 +19,18 @@ public class AiController : ControllerBase
     }
 
     [HttpPost("chat")]
-    public async Task<ActionResult<AiChatResponseDto>> Chat([FromBody] AiChatRequestDto req, CancellationToken cancellationToken)
+    public async Task<ActionResult<AiChatResponseDto>> Chat(
+    [FromBody] AiChatRequestDto req,
+    CancellationToken cancellationToken)
     {
         if (req is null)
         {
             return BadRequest("Request body is required.");
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return Unauthorized("User identity not found.");
-        }
-
         var finalPrompt = req.Context is null
             ? req.Prompt
-            : $"UserId: {userId}\nContext (quiz): {req.Context}\n\nUser question: {req.Prompt}";
+            : $"Context (quiz): {req.Context}\n\nUser question: {req.Prompt}";
 
         var answer = await _ai.AskAsync(finalPrompt, cancellationToken);
 
@@ -44,14 +40,3 @@ public class AiController : ControllerBase
         });
     }
 }
-
-
-
-
-
-
-
-
-
-
-

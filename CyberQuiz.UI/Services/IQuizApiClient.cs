@@ -10,6 +10,6 @@ namespace CyberQuiz.UI.Services
         Task<List<QuestionDto>> GetQuestionsAsync(int subCategoryId, string userId);
         Task<SubmitAnswerResponseDto> SubmitAnswerAsync(string userId, SubmitAnswerRequestDto request);
         Task<UserProgressDto> GetUserProgressAsync(string userId);
-        Task<string?> AskAsync(AiChatRequestDto request);
+        Task<AiChatResponseDto> AskAiAsync(AiChatRequestDto request);
     }
 }

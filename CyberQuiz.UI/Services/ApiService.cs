@@ -1,4 +1,5 @@
 ﻿using CyberQuiz.Shared.DTOs;
+using CyberQuiz.Shared.AI;
 
 namespace CyberQuiz.UI.Services
 {
@@ -45,6 +46,17 @@ namespace CyberQuiz.UI.Services
         {
             return await _httpClient.GetFromJsonAsync<UserProgressDto>(
                 $"api/quiz/user-progress?userId={userId}");
+        }
+
+        //ai
+        public async Task<AiChatResponseDto> AskAiAsync(AiChatRequestDto request)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/ai/chat", request);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<AiChatResponseDto>()
+                   ?? throw new Exception("Failed to deserialize AiChatResponseDto");
         }
     }
 }

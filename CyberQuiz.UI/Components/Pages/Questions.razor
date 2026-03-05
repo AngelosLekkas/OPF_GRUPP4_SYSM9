@@ -1,8 +1,11 @@
 ﻿@page "/questions/{SubCategoryId:int}"
+@using CyberQuiz.Shared.AI
 @using CyberQuiz.Shared.DTOs
 @inject NavigationManager Navigation
 @using System.Security.Claims
 @using CyberQuiz.UI.Services
+@inject IHttpClientFactory HttpFactory
+@inject HttpClient Http
 @inject AuthenticationStateProvider AuthStateProvider
 
 @* =========================================
@@ -72,6 +75,22 @@
                     @onclick="NextQuestion">
                 Next Question
             </button>
+        }
+        
+        @if (answered && !isCorrect)
+        {
+            <h3>Ask the AI</h3>
+
+            <input @bind="userMessage" placeholder="Ask about this question..." />
+
+            <button @onclick="AskAi">Ask AI</button>
+
+            @if (aiAnswer != null)
+            {
+                <div class="alert alert-info">
+                    <b>AI:</b> @aiAnswer
+                </div>
+            }
         }
     </div>
 }
@@ -218,6 +237,28 @@
         {
             quizFinished = true;
         }
+    }
+
+    //ai:
+
+    string? userMessage;
+    string? aiAnswer;
+
+    async Task AskAi()
+    {
+        var req = new AiChatRequestDto
+        {
+            Prompt = userMessage ?? "",
+            Context = $"Question: {currentQuestion?.Text}"
+        };
+
+        var client = HttpFactory.CreateClient("API");
+
+        var response = await Http.PostAsJsonAsync("api/ai/chat", req);
+
+        var result = await response.Content.ReadFromJsonAsync<AiChatResponseDto>();
+
+        aiAnswer = result?.Answer;
     }
 
 

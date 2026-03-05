@@ -247,15 +247,23 @@
 
     async Task AskAi()
     {
+        if (string.IsNullOrWhiteSpace(userMessage))
+        {
+            aiAnswer = "Please enter a question for the AI.";
+            return;
+        }
+
         var req = new AiChatRequestDto
         {
-            Prompt = userMessage ?? "",
+            Prompt = userMessage,
             Context = $"Question: {currentQuestion?.Text}"
         };
 
         var result = await QuizApi.AskAiAsync(req);
 
         aiAnswer = result.Answer;
+
+        userMessage = "";
     }
 
 

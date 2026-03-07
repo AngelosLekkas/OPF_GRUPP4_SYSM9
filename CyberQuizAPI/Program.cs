@@ -19,7 +19,18 @@ builder.Services.AddDbContext<CyberQuizDbContext>(options =>
 
 builder.Services.AddHttpClient<AiService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:11434");
+    var baseUrl = builder.Configuration["Ai:BaseUrl"];
+    if (string.IsNullOrWhiteSpace(baseUrl))
+    {
+        throw new InvalidOperationException("AI base URL is not configured.");
+    }
+
+    client.BaseAddress = new Uri(baseUrl);
+
+    if (int.TryParse(builder.Configuration["Ai:TimeoutSeconds"], out var timeoutSeconds) && timeoutSeconds > 0)
+    {
+        client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+    }
 });
 
 // ---------------------------------------------
@@ -107,30 +118,12 @@ builder.Services.AddCors(options =>
               .AllowCredentials()
               .WithOrigins(
                   "https://localhost:7255",   // Blazor UI HTTPS
-                  "http://localhost:5063",    // Blazor UI HTTP
-                  "http://localhost:5275/swagger",     // API HTTP (for testing)
-                  "http://localhost:7050"     // API HTTP (for testing)
+                  "http://localhost:5063"     // Blazor UI HTTP
               );
     });
 });
 
-
-// -----------------------------
-// 6.1 Register HttpClients
-// -----------------------------
-//builder.Services.AddHttpClient<AiService>(client =>
-//{
-//    var baseUrl = builder.Configuration["Ai:BaseUrl"];
-//    if (!string.IsNullOrWhiteSpace(baseUrl))
-//    {
-//        client.BaseAddress = new Uri(baseUrl);
-//    }
-
-//    if (int.TryParse(builder.Configuration["Ai:TimeoutSeconds"], out var timeoutSeconds) && timeoutSeconds > 0)
-//    {
-//        client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-//    }
-//});
+// To open Swagger -> Use this port:  https://localhost:7050/swagger
 
 
 

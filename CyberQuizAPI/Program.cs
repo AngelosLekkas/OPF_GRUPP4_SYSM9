@@ -107,12 +107,14 @@ builder.Services.AddCors(options =>
               .AllowCredentials()
               .WithOrigins(
                   "https://localhost:7255",   // Blazor UI HTTPS
-                  "http://localhost:5063",    // Blazor UI HTTP
-                  "http://localhost:5275/swagger",     // API HTTP (for testing)
-                  "http://localhost:7050"     // API HTTP (for testing)
+                  "http://localhost:5063"     // Blazor UI HTTP
               );
     });
 });
+
+// To open Swagger -> Use this port:  https://localhost:7050/swagger
+
+
 
 
 // -----------------------------

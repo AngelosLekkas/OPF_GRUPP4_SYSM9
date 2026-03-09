@@ -1,4 +1,7 @@
-﻿using CyberQuiz.Shared.DTOs;
+﻿// ApiService fungerar som ett mellanlager mellan Blazor UI och backend API.
+// Den ansvarar för att skicka och ta emot HTTP-requests via HttpClient.
+
+using CyberQuiz.Shared.DTOs;
 using CyberQuiz.Shared.AI;
 
 namespace CyberQuiz.UI.Services

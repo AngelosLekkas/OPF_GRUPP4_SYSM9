@@ -86,7 +86,7 @@
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value; //användare hämtas
 
         //hämtar kategorierna
         if (userId != null)

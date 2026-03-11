@@ -6,7 +6,7 @@ namespace CyberQuiz.DAL.Data;
 public class CyberQuizDbContext : DbContext
 {
 
-    // Inherite from IdentityDbContext to include ASP.NET Core Identity tables for user management
+
     public CyberQuizDbContext(DbContextOptions<CyberQuizDbContext> options)
        : base(options)
     {

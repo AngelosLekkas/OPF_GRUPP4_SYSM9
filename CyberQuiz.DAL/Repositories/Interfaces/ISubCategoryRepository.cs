@@ -1,4 +1,5 @@
 ﻿using CyberQuiz.DAL.Entities;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace CyberQuiz.DAL.Repositories.Interfaces;
@@ -11,6 +12,9 @@ public interface ISubCategoryRepository
 
     // Returns subcategories that belong to a specific category(Suitable for SubCategory List-Page)
     Task<List<SubCategory>> GetByCategoryAsync(int categoryId, CancellationToken cancellationToken = default);
+
+    // Returns subcategories for a set of categories ordered for overview/progress scenarios
+    Task<List<SubCategory>> GetByCategoryIdsAsync(IEnumerable<int> categoryIds, CancellationToken cancellationToken = default);
 
     // Returns a specific subcategory by its ID(Suitable for SubCategory Edit-Page)
     Task<SubCategory?> GetByIdAsync(int id, CancellationToken cancellationToken = default);

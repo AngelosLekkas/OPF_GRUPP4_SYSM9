@@ -2,6 +2,7 @@
 using CyberQuiz.DAL.Entities;
 using CyberQuiz.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 
@@ -34,6 +35,27 @@ public class SubCategoryRepository : ISubCategoryRepository
             .Where(sc => sc.CategoryId == categoryId)
             .OrderBy(sc => sc.SortOrder)
             .ToListAsync(cancellationToken);
+
+
+    // Returns subcategories that belong to any of the given categories (Useful for category overview pages)
+    public async Task<List<SubCategory>> GetByCategoryIdsAsync(IEnumerable<int> categoryIds, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(categoryIds);
+
+        var categoryIdArray = categoryIds.Distinct().ToArray();
+        if (categoryIdArray.Length == 0)
+        {
+            return new List<SubCategory>();
+        }
+
+        return await _db.SubCategories
+            .AsNoTracking()
+            .Where(sc => categoryIdArray.Contains(sc.CategoryId))
+            .OrderBy(sc => sc.CategoryId)
+            .ThenBy(sc => sc.SortOrder)
+            .ThenBy(sc => sc.Id)
+            .ToListAsync(cancellationToken);
+    }
 
 
     // Returns all categories including their related subcategories

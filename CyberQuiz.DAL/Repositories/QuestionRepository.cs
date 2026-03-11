@@ -2,6 +2,7 @@
 using CyberQuiz.DAL.Entities;
 using CyberQuiz.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 
@@ -13,6 +14,7 @@ public class QuestionRepository : IQuestionRepository
 
     public QuestionRepository(CyberQuizDbContext db)
     {
+        ArgumentNullException.ThrowIfNull(db);
         _db = db;
     }
 
@@ -30,6 +32,13 @@ public class QuestionRepository : IQuestionRepository
     public async Task<Question?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         => await _db.Questions.FindAsync([id], cancellationToken);
 
+    // Returns 1 question with answer options included for quiz play
+    public async Task<Question?> GetByIdWithAnswerOptionsAsync(int id, CancellationToken cancellationToken = default)
+        => await _db.Questions
+            .AsNoTracking()
+            .Include(q => q.AnswerOptions.OrderBy(a => a.DisplayOrder))
+            .SingleOrDefaultAsync(q => q.Id == id, cancellationToken);
+
     // Returns all questions that belong to given subCategoryId
     public async Task<List<Question>> GetBySubCategoryAsync(int subCategoryId, CancellationToken cancellationToken = default)
         => await _db.Questions
@@ -38,18 +47,53 @@ public class QuestionRepository : IQuestionRepository
             .OrderBy(q => q.Id)
             .ToListAsync(cancellationToken);
 
-    // Returns counts of questions grouped by SubCategoryId for given sub ids
-    public async Task<Dictionary<int,int>> GetQuestionCountsBySubIdsAsync(IEnumerable<int> subIds, CancellationToken cancellationToken = default)
+    // Returns all questions in the given subcategory with their answer options
+    public async Task<List<Question>> GetBySubCategoryWithAnswerOptionsAsync(int subCategoryId, CancellationToken cancellationToken = default)
         => await _db.Questions
             .AsNoTracking()
-            .Where(q => subIds.Contains(q.SubCategoryId))
+            .Where(q => q.SubCategoryId == subCategoryId)
+            .OrderBy(q => q.Id)
+            .Include(q => q.AnswerOptions.OrderBy(a => a.DisplayOrder))
+            .AsSplitQuery()
+            .ToListAsync(cancellationToken);
+
+    // Returns only question ids for the given subcategory to keep progress lookups lightweight
+    public async Task<List<int>> GetIdsBySubCategoryAsync(int subCategoryId, CancellationToken cancellationToken = default)
+        => await _db.Questions
+            .AsNoTracking()
+            .Where(q => q.SubCategoryId == subCategoryId)
+            .OrderBy(q => q.Id)
+            .Select(q => q.Id)
+            .ToListAsync(cancellationToken);
+
+    // Returns counts of questions grouped by SubCategoryId for given sub ids
+    public async Task<Dictionary<int,int>> GetQuestionCountsBySubIdsAsync(IEnumerable<int> subIds, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(subIds);
+
+        var subIdArray = subIds.Distinct().ToArray();
+        if (subIdArray.Length == 0)
+        {
+            return new Dictionary<int, int>();
+        }
+
+        return await _db.Questions
+            .AsNoTracking()
+            .Where(q => subIdArray.Contains(q.SubCategoryId))
             .GroupBy(q => q.SubCategoryId)
             .Select(g => new { SubId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.SubId, x => x.Count, cancellationToken);
+    }
 
     public async Task AddAsync(Question question)
-        => await _db.Questions.AddAsync(question);
+    {
+        ArgumentNullException.ThrowIfNull(question);
+        await _db.Questions.AddAsync(question);
+    }
 
     public void Remove(Question question)
-        => _db.Questions.Remove(question);
+    {
+        ArgumentNullException.ThrowIfNull(question);
+        _db.Questions.Remove(question);
+    }
 }

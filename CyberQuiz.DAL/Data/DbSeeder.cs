@@ -106,327 +106,320 @@ public static class DbSeeder
         try
         {
             // ====================================================================================
-            // CATEGORY 1: .NET Web Development
+            // CATEGORY 1: Network Security
             // ====================================================================================
-            var cat1 = new Category { Name = ".NET Web Development" };
+            var cat1 = new Category { Name = "Network Security" };
 
-            // --- SubCategory 1.1: Web API & MVC ---
-            var sub1_1 = new SubCategory { Name = "Web API & MVC", Category = cat1, SortOrder = 1 };
+            var sub1_1 = new SubCategory { Name = "Network Attacks", Category = cat1, SortOrder = 1 };
             sub1_1.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "What does MVC stand for?",
-                    SubCategory = sub1_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Model View Controller", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Main Virtual Code", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Model Visual Core", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which HTTP method is used to retrieve data?",
-                    SubCategory = sub1_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "POST", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "GET", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "PUT", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What attribute is used to define a POST endpoint?",
-                    SubCategory = sub1_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "[HttpGet]", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "[HttpPost]", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "[FromBody]", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is Middleware in ASP.NET Core?",
-                    SubCategory = sub1_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Hardware component", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Software pipeline to handle requests", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Database engine", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is the return type for an API action that returns JSON?",
-                    SubCategory = sub1_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "string", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "IActionResult", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "void", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
+{
+    new Question {
+        Text = "What is a DDoS attack?",
+        SubCategory = sub1_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Overloading a server with massive traffic", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Encrypting stored passwords", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Updating firewall firmware", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is phishing?",
+        SubCategory = sub1_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Tricking users into revealing sensitive information", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Scanning open ports", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Monitoring CPU usage", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is a Man-in-the-Middle attack?",
+        SubCategory = sub1_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Intercepting communication between two parties", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Deleting system logs", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Restarting network routers", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Which tool is used for packet sniffing?",
+        SubCategory = sub1_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Wireshark", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Excel", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Docker", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is port scanning?",
+        SubCategory = sub1_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Identifying open network ports", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Encrypting hard drives", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Installing software updates", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+};
 
-            // --- SubCategory 1.2: Blazor Framework ---
-            var sub1_2 = new SubCategory { Name = "Blazor Framework", Category = cat1, SortOrder = 2 };
+            var sub1_2 = new SubCategory { Name = "Secure Communication", Category = cat1, SortOrder = 2 };
             sub1_2.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "What language does Blazor use for client-side logic?",
-                    SubCategory = sub1_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "JavaScript only", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "C#", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Python", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What symbol is used for Razor syntax?",
-                    SubCategory = sub1_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "$", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "@", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "#", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which hosting model runs Blazor on the server via SignalR?",
-                    SubCategory = sub1_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Blazor WebAssembly", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Blazor Server", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Blazor Static", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which lifecycle method is called when a component initializes?",
-                    SubCategory = sub1_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "OnStart", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "OnInitializedAsync", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "OnLoad", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "How do you bind an input value to a variable?",
-                    SubCategory = sub1_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "@bind", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "v-model", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "ng-model", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
-
+{
+    new Question {
+        Text = "What does HTTPS ensure?",
+        SubCategory = sub1_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Encrypted web traffic", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Faster internet speed", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Unlimited bandwidth", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Which protocol is secure for file transfers?",
+        SubCategory = sub1_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "SFTP", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "FTP", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Telnet", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is TLS mainly used for?",
+        SubCategory = sub1_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Encrypting data in transit", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Managing databases", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Compressing files", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is a VPN?",
+        SubCategory = sub1_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Encrypted tunnel over the internet", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Local printer network", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Gaming protocol", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Which port is used for HTTPS?",
+        SubCategory = sub1_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "443", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "80", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "25", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+};
 
             // ====================================================================================
-            // CATEGORY 2: C# Programming
+            // CATEGORY 2: Cyber Defense
             // ====================================================================================
-            var cat2 = new Category { Name = "C# Programming" };
+            var cat2 = new Category { Name = "Cyber Defense" };
 
-            // --- SubCategory 2.1: C# Fundamentals ---
-            var sub2_1 = new SubCategory { Name = "C# Fundamentals", Category = cat2, SortOrder = 1 };
+            var sub2_1 = new SubCategory { Name = "Authentication Security", Category = cat2, SortOrder = 1 };
             sub2_1.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "What is the entry point of a C# console application?",
-                    SubCategory = sub2_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Start()", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Main()", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Run()", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which type is a Value Type?",
-                    SubCategory = sub2_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "string", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "int", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "class", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which keyword makes a class inaccessible outside its assembly?",
-                    SubCategory = sub2_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "private", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "internal", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "public", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is an Interface?",
-                    SubCategory = sub2_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "A class with full implementation", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "A contract defines method signatures", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "A variable type", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which symbol is used for inheritance?",
-                    SubCategory = sub2_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = ":", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "=>", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "::", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
+{
+    new Question {
+        Text = "What is Multi-Factor Authentication (MFA)?",
+        SubCategory = sub2_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Using multiple verification methods", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Logging in twice", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Sharing passwords", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Why are strong passwords important?",
+        SubCategory = sub2_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "They reduce risk of brute-force attacks", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "They speed up login", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "They reduce internet cost", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is password hashing?",
+        SubCategory = sub2_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Transforming passwords into fixed encrypted values", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Saving passwords as plain text", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Deleting passwords automatically", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is biometric authentication?",
+        SubCategory = sub2_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Authentication using physical traits", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Using security questions", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Using IP addresses", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is a brute-force attack?",
+        SubCategory = sub2_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Trying many password combinations automatically", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Updating antivirus", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Scanning USB devices", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+};
 
-            // --- SubCategory 2.2: Advanced C# ---
-            var sub2_2 = new SubCategory { Name = "Advanced C#", Category = cat2, SortOrder = 2 };
+            var sub2_2 = new SubCategory { Name = "Malware Protection", Category = cat2, SortOrder = 2 };
             sub2_2.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "What keyword is paired with 'await'?",
-                    SubCategory = sub2_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "sync", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "async", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "task", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is LINQ used for?",
-                    SubCategory = sub2_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Querying data", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Styling web pages", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Compiling code", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What does 'Dependency Injection' help with?",
-                    SubCategory = sub2_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Assuming hard dependencies", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Decoupling classes and testing", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Increasing code size", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is a 'Delegate'?",
-                    SubCategory = sub2_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "A UI component", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "A type-safe function pointer", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "A database table", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What lifetime is created once per request?",
-                    SubCategory = sub2_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Singleton", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Scoped", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Transient", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
-
+{
+    new Question {
+        Text = "What is ransomware?",
+        SubCategory = sub2_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Malware that locks data for payment", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Backup software", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Firewall update", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What does antivirus software do?",
+        SubCategory = sub2_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Detects and removes malicious software", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Speeds up internet", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Encrypts emails", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is spyware?",
+        SubCategory = sub2_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Software that secretly gathers user data", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Gaming software", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Printer drivers", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is a Trojan?",
+        SubCategory = sub2_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Malware disguised as legitimate software", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Cloud storage", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Security patch", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Why are software updates important?",
+        SubCategory = sub2_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "They fix security vulnerabilities", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "They reduce RAM usage", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "They remove encryption", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+};
 
             // ====================================================================================
-            // CATEGORY 3: Architecture & Data
+            // CATEGORY 3: Security Architecture
             // ====================================================================================
-            var cat3 = new Category { Name = "Architecture & Data" };
+            var cat3 = new Category { Name = "Security Architecture" };
 
-            // --- SubCategory 3.1: 3-Layer Architecture ---
-            var sub3_1 = new SubCategory { Name = "3-Layer Architecture", Category = cat3, SortOrder = 1 };
+            var sub3_1 = new SubCategory { Name = "Secure System Design", Category = cat3, SortOrder = 1 };
             sub3_1.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "Which is NOT one of the 3 layers?",
-                    SubCategory = sub3_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Presentation Layer", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Business Logic Layer", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Cloud Layer", IsCorrect = true, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is the responsibility of DAL?",
-                    SubCategory = sub3_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Handle UI events", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Data Access / Database interaction", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Validate business rules", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Where should complex business rules reside?",
-                    SubCategory = sub3_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Presentation Layer", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Business Logic Layer (BLL)", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Data Access Layer", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Why use multi-layer architecture?",
-                    SubCategory = sub3_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "To make code header to read", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Separation of concerns (SoC)", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "To use more memory", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Are DTOs (Data Transfer Objects) usually used in DAL?",
-                    SubCategory = sub3_1,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Yes, strictly", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "No, mostly between BLL and UI", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "No, they are for database tables", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
+{
+    new Question {
+        Text = "What is the principle of least privilege?",
+        SubCategory = sub3_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Users get only necessary access rights", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Admins get full control always", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Everyone shares accounts", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is network segmentation?",
+        SubCategory = sub3_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Dividing a network into smaller secure parts", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Deleting routers", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Increasing bandwidth", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is an IDS?",
+        SubCategory = sub3_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Intrusion Detection System", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Internet Download Service", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Internal Data Storage", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Why is logging important in security?",
+        SubCategory = sub3_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "To detect and investigate incidents", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "To increase CPU usage", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "To slow down systems", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is a security audit?",
+        SubCategory = sub3_1,
+        AnswerOptions = {
+            new AnswerOption { Text = "Reviewing systems for vulnerabilities", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Deleting databases", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Installing printers", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+};
 
-            // --- SubCategory 3.2: Entity Framework Core ---
-            var sub3_2 = new SubCategory { Name = "Entity Framework Core", Category = cat3, SortOrder = 2 };
+            var sub3_2 = new SubCategory { Name = "Database Security", Category = cat3, SortOrder = 2 };
             sub3_2.Questions = new List<Question>
-            {
-                new Question {
-                    Text = "What is Entity Framework Core?",
-                    SubCategory = sub3_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "A Database", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "An ORM (Object-Relational Mapper)", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "A UI Framework", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What represents a table in EF Core?",
-                    SubCategory = sub3_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "DbSet<T>", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "DbContext", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Migration", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "Which command adds a new migration?",
-                    SubCategory = sub3_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "dotnet run", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "dotnet ef migrations add", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "dotnet build", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is the Code-First approach?",
-                    SubCategory = sub3_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "Database created from C# classes", IsCorrect = true, DisplayOrder = 1 },
-                        new AnswerOption { Text = "C# classes created from Database", IsCorrect = false, DisplayOrder = 2 },
-                        new AnswerOption { Text = "Writing SQL manually", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                },
-                new Question {
-                    Text = "What is a Navigation Property?",
-                    SubCategory = sub3_2,
-                    AnswerOptions = {
-                        new AnswerOption { Text = "A URL link", IsCorrect = false, DisplayOrder = 1 },
-                        new AnswerOption { Text = "Property to access related entities", IsCorrect = true, DisplayOrder = 2 },
-                        new AnswerOption { Text = "A connection string", IsCorrect = false, DisplayOrder = 3 }
-                    }
-                }
-            };
+{
+    new Question {
+        Text = "What is SQL Injection?",
+        SubCategory = sub3_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Injecting malicious SQL queries into input fields", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Backing up databases", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Encrypting network cables", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Why encrypt data at rest?",
+        SubCategory = sub3_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "To protect stored sensitive information", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "To increase internet speed", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "To remove backups", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is database access control?",
+        SubCategory = sub3_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Restricting who can read or modify data", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Deleting user accounts", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Formatting hard drives", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "What is data masking?",
+        SubCategory = sub3_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "Hiding sensitive data from unauthorized users", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "Deleting rows", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "Restarting servers", IsCorrect = false, DisplayOrder = 3 }
+        }
+    },
+    new Question {
+        Text = "Why are database backups important?",
+        SubCategory = sub3_2,
+        AnswerOptions = {
+            new AnswerOption { Text = "To recover data after attacks or failures", IsCorrect = true, DisplayOrder = 1 },
+            new AnswerOption { Text = "To increase hacking risk", IsCorrect = false, DisplayOrder = 2 },
+            new AnswerOption { Text = "To slow performance", IsCorrect = false, DisplayOrder = 3 }
+        }
+    }
+    };
+
 
 
 

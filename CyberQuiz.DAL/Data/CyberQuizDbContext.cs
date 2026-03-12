@@ -6,7 +6,7 @@ namespace CyberQuiz.DAL.Data;
 public class CyberQuizDbContext : DbContext
 {
 
-    // Inherite from IdentityDbContext to include ASP.NET Core Identity tables for user management
+
     public CyberQuizDbContext(DbContextOptions<CyberQuizDbContext> options)
        : base(options)
     {
@@ -76,6 +76,15 @@ public class CyberQuizDbContext : DbContext
             .HasForeignKey(r => r.AnswerOptionId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Default values for domain consistency in model/database
+        builder.Entity<Question>()
+            .Property(q => q.Points)
+            .HasDefaultValue(1);
+
+        builder.Entity<UserResult>()
+            .Property(r => r.AnsweredAt)
+            .HasDefaultValueSql("SYSUTCDATETIME()");
+
 
 
         // ==========================================
@@ -85,11 +94,19 @@ public class CyberQuizDbContext : DbContext
 
         // Index for sorting SubCategories by Order inside a Category
         builder.Entity<SubCategory>()
-            .HasIndex(s => new { s.CategoryId, s.SortOrder });
+            .HasIndex(s => new { s.CategoryId, s.SortOrder })
+            .IsUnique();
 
         // Index for AnswerOptions display order
         builder.Entity<AnswerOption>()
-            .HasIndex(a => new { a.QuestionId, a.DisplayOrder });
+            .HasIndex(a => new { a.QuestionId, a.DisplayOrder })
+            .IsUnique();
+
+        // Unique filtered index to allow only one correct answer per question
+        builder.Entity<AnswerOption>()
+            .HasIndex(a => a.QuestionId)
+            .HasFilter("[IsCorrect] = 1")
+            .IsUnique();
 
 
         //// Index for User History lookups (faster profile/progression queries)

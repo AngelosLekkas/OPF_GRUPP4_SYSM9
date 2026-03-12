@@ -1,9 +1,5 @@
 ﻿using CyberQuiz.BLL.Interfaces;
-//using CyberQuiz.DAL.Entities;
 using CyberQuiz.Shared.DTOs;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Hosting;
-//using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CyberQuiz.API.Controllers
@@ -11,19 +7,13 @@ namespace CyberQuiz.API.Controllers
     //  API Controller for “Quiz endpoints” 
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
-
     public class QuizController : ControllerBase
     {
         private readonly IQuizService _quizService;
-        //private readonly UserManager<AppUser> _userManager;
-        //private readonly IWebHostEnvironment _environment;
 
-        public QuizController(IQuizService quizService/*, UserManager<AppUser> userManager, IWebHostEnvironment environment*/)
+        public QuizController(IQuizService quizService)
         {
             _quizService = quizService;
-            //_userManager = userManager;
-            //_environment = environment;
         }
 
         // 1. Returns all Categories

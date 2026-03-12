@@ -240,6 +240,7 @@ namespace CyberQuiz.BLL.Services
                 if (p.IsCompleted) completedSubCategories++;
             }
 
+            //Om vi vill kunna låsa kategorier också ->
             //Räknar färdiga kategorier (en kategori är klar om alla dess subkategorier är klara)
             var completedCategories = 0;
             foreach (var cat in categories)

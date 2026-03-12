@@ -68,6 +68,30 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
+//user till hassan:
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    var username = "User";
+    var password = "Password1234!";
+    var email = "user@test.com";
+
+    var user = await userManager.FindByNameAsync(username);
+
+    if (user == null)
+    {
+        user = new ApplicationUser
+        {
+            UserName = username,
+            Email = email,
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(user, password);
+    }
+}
+
 app.Run();
 
 

@@ -26,13 +26,13 @@ public class AiController : ControllerBase
     [HttpPost("chat")]
     public async Task<IActionResult> Chat([FromBody] AiChatRequestDto? req, CancellationToken cancellationToken)
     {
-        //Validate the request body, recieve the promp from the user
+        //Kontrollera att prompt inte är null eller tom
         if (req is null || string.IsNullOrWhiteSpace(req.Prompt))
         {
             return BadRequest("Prompt is required.");
         }
 
-        //Hämta quiz topics från db
+        //Hämta kategorier och subkategorier från databasen för att skapa en kontext för AI
         var categories = await _db.Categories.ToListAsync(cancellationToken);
         var subCategories = await _db.SubCategories.ToListAsync(cancellationToken);
 
@@ -48,9 +48,8 @@ public class AiController : ControllerBase
                 return $"Category: {c.Name}\n{string.Join("\n", subs)}";
             })
         );
-        // finalPrompt will be the prompt we send to the AI.
-        // If context is provided, we include it in the prompt.
 
+        //Skapa en prompt för AI som inkluderar både användarens fråga och den kontext som hämtats från databasen
         var finalPrompt = $@"
         You are a CyberQuiz chatbot.
         Only answer questions related to the topics listed below.
@@ -65,21 +64,9 @@ public class AiController : ControllerBase
         ";
 
 
-
-        //Promt: inputText from the user
-        // Context: additional information that can help the AI provide a better answer(ex. quiz questions, code snippets, etc.)
-
-        //if (!string.IsNullOrWhiteSpace(req.Context))
-        //{
-        //    finalPrompt = $"Context (quiz): {req.Context}\n\n User question: {req.Prompt}";
-        //}
-
-
-        // Call AiService (AskAsyn in Service: Send promt to AI and Recieve data from AI as string)
+        //Skicka prompt och context till AI-tjänsten och få ett svar
         var answer = await _ai.AskAsync(finalPrompt, cancellationToken);
 
-
-        // Return an answer to the Client as JSON (Answer from AI)
         return Ok(new AiChatResponseDto
         {
             Answer = answer
